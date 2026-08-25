@@ -1,141 +1,42 @@
 ---
-name: find-skills
-description: Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", "is there a skill that can...", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill.
+name: cms-pptx-builder
+description: "입력 자료와 디자인 규칙만을 근거로 편집 가능한 PPTX의 제작 계획을 세우고, 승인 후 생성·렌더링·검수하는 스킬. 수업 자료, 강의안, 보고용 발표자료처럼 출처 관리와 발표자 노트 검증이 필요한 PowerPoint 제작에 사용한다."
 ---
 
-# Find Skills
+# CMS PPTX Builder
 
-This skill helps you discover and install skills from the open agent skills ecosystem.
+입력 자료의 근거와 사용자의 디자인 지시를 보존하면서 PowerPoint를 제작한다. 대상 자료와 주제는 스킬에 내장하지 않고 매 작업의 입력값으로 받는다.
 
-## When to Use This Skill
+## 필수 입력과 우선순위
 
-Use this skill when the user:
+- 대상 자료: `[입력값]`
+- 주제: `[입력값]`
+- 저장 위치와 파일명: `[입력값]`
+- 대상, 차시·발표 시간, 슬라이드 수, 디자인 문서, 글꼴, 노트 형식, 인터넷 사용 여부: 사용자가 제공한 값이 있으면 그대로 적용한다.
+- 값이 없고 결과에 중대한 영향을 주면 자료에서 확인하거나 사용자에게 묻는다. 임의의 교과 내용, 사실, 수치, 출처를 채우지 않는다.
+- 사용자 지시, 프로젝트 지침, 원자료, 디자인 문서 순으로 함께 적용하되 충돌하면 사용자에게 먼저 알린다.
 
-- Asks "how do I do X" where X might be a common task with an existing skill
-- Says "find a skill for X" or "is there a skill for X"
-- Asks "can you do X" where X is a specialized capability
-- Expresses interest in extending agent capabilities
-- Wants to search for tools, templates, or workflows
-- Mentions they wish they had help with a specific domain (design, testing, deployment, etc.)
+## 실행 원칙
 
-## What is the Skills CLI?
+1. 원본은 읽기 전용으로 다룬다. 수정·삭제·덮어쓰기를 하지 않는다.
+2. 제작 전에 반드시 계획, 저장 위치, 입력 자료, 슬라이드 흐름, 디자인 변환 방식, 글꼴 상태, 확인 필요 항목을 보여주고 승인을 기다린다.
+3. 승인 전에는 최종 PPTX를 만들지 않는다. 승인은 제시한 범위에만 유효하다.
+4. 승인 후 프레젠테이션 제작 기능을 사용해 도형·텍스트·표·차트를 가능한 한 PowerPoint에서 편집 가능한 객체로 만든다.
+5. 모든 슬라이드를 렌더링해 개별 검수하고, 구조 검사와 원본 보존 검사를 마친 뒤 결과를 보고한다.
 
-The Skills CLI (`npx skills`) is the package manager for the open agent skills ecosystem. Skills are modular packages that extend agent capabilities with specialized knowledge, workflows, and tools.
+세부 제작 절차는 [references/build-workflow.md](references/build-workflow.md)를 읽어 적용한다. 최종 검수에는 [references/qa-checklist.md](references/qa-checklist.md)를 사용한다.
 
-**Key commands:**
+## 중단하고 확인할 조건
 
-- `npx skills find [query] [--owner <owner>]` - Search for skills interactively or by keyword, optionally scoped to a GitHub owner
-- `npx skills add <package>` - Install a skill from GitHub or other sources
-- `npx skills update` - Update all installed skills
+- 지정 글꼴을 사용할 수 없거나 대체 글꼴이 필요한 경우
+- 디자인 규칙을 16:9 슬라이드에 일관되게 변환할 수 없는 경우
+- 수치 근거 없이 정량 차트를 만들어야 하는 경우
+- 출처가 불명확하거나 자료끼리 충돌하는 경우
+- 대상 경로에 같은 이름의 파일이 이미 있는 경우
+- 저장 권한, 렌더러 또는 필수 제작 기능이 없어 검증을 끝낼 수 없는 경우
 
-**Browse skills at:** https://skills.sh/
+불확실한 사실과 수치는 `확인 필요`로 표시한다. 사용자의 새 승인 없이 범위를 넓히거나 외부 자료를 추가하지 않는다.
 
-## How to Help Users Find Skills
+## 완료 보고
 
-### Step 1: Understand What They Need
-
-When a user asks for help with something, identify:
-
-1. The domain (e.g., React, testing, design, deployment)
-2. The specific task (e.g., writing tests, creating animations, reviewing PRs)
-3. Whether this is a common enough task that a skill likely exists
-
-### Step 2: Check the Leaderboard First
-
-Before running a CLI search, check the [skills.sh leaderboard](https://skills.sh/) to see if a well-known skill already exists for the domain. The leaderboard ranks skills by total installs, surfacing the most popular and battle-tested options.
-
-For example, top skills for web development include:
-- `vercel-labs/agent-skills` — React, Next.js, web design (100K+ installs each)
-- `anthropics/skills` — Frontend design, document processing (100K+ installs)
-
-### Step 3: Search for Skills
-
-If the leaderboard doesn't cover the user's need, run the find command:
-
-```bash
-npx skills find [query] [--owner <owner>]
-```
-
-For example:
-
-- User asks "how do I make my React app faster?" → `npx skills find react performance`
-- User asks "can you help me with PR reviews?" → `npx skills find pr review`
-- User asks "I need to create a changelog" → `npx skills find changelog`
-
-### Step 4: Verify Quality Before Recommending
-
-**Do not recommend a skill based solely on search results.** Always verify:
-
-1. **Install count** — Prefer skills with 1K+ installs. Be cautious with anything under 100.
-2. **Source reputation** — Official sources (`vercel-labs`, `anthropics`, `microsoft`) are more trustworthy than unknown authors.
-3. **GitHub stars** — Check the source repository. A skill from a repo with <100 stars should be treated with skepticism.
-
-### Step 5: Present Options to the User
-
-When you find relevant skills, present them to the user with:
-
-1. The skill name and what it does
-2. The install count and source
-3. The install command they can run
-4. A link to learn more at skills.sh
-
-Example response:
-
-```
-I found a skill that might help! The "react-best-practices" skill provides
-React and Next.js performance optimization guidelines from Vercel Engineering.
-(185K installs)
-
-To install it:
-npx skills add vercel-labs/agent-skills@react-best-practices
-
-Learn more: https://skills.sh/vercel-labs/agent-skills/react-best-practices
-```
-
-### Step 6: Offer to Install
-
-If the user wants to proceed, you can install the skill for them:
-
-```bash
-npx skills add <owner/repo@skill> -g -y
-```
-
-The `-g` flag installs globally (user-level) and `-y` skips confirmation prompts.
-
-## Common Skill Categories
-
-When searching, consider these common categories:
-
-| Category        | Example Queries                          |
-| --------------- | ---------------------------------------- |
-| Web Development | react, nextjs, typescript, css, tailwind |
-| Testing         | testing, jest, playwright, e2e           |
-| DevOps          | deploy, docker, kubernetes, ci-cd        |
-| Documentation   | docs, readme, changelog, api-docs        |
-| Code Quality    | review, lint, refactor, best-practices   |
-| Design          | ui, ux, design-system, accessibility     |
-| Productivity    | workflow, automation, git                |
-
-## Tips for Effective Searches
-
-1. **Use specific keywords**: "react testing" is better than just "testing"
-2. **Try alternative terms**: If "deploy" doesn't work, try "deployment" or "ci-cd"
-3. **Check popular sources**: Many skills come from `vercel-labs/agent-skills` or `ComposioHQ/awesome-claude-skills`
-
-## When No Skills Are Found
-
-If no relevant skills exist:
-
-1. Acknowledge that no existing skill was found
-2. Offer to help with the task directly using your general capabilities
-3. Suggest the user could create their own skill with `npx skills init`
-
-Example:
-
-```
-I searched for skills related to "xyz" but didn't find any matches.
-I can still help you with this task directly! Would you like me to proceed?
-
-If this is something you do often, you could create your own skill:
-npx skills init my-xyz-skill
-```
+실제 저장 경로와 함께 생성 파일, 슬라이드 수·비율, 적용 글꼴, 출처·노트 상태, 렌더링 결과, 편집성, 원본 보존 여부, 남은 `확인 필요` 항목을 표로 정리한다.

@@ -1,0 +1,6 @@
+interface:
+  display_name: "CMS PPTX 제작기"
+  short_description: "근거 자료로 PPTX를 계획·제작하고 전체 슬라이드를 검수합니다."
+  default_prompt: "$cms-pptx-builder를 사용해 [대상 자료]와 [주제]를 입력값으로 받아 PPTX 제작 계획부터 제시해 주세요."
+policy:
+  allow_implicit_invocation: true
