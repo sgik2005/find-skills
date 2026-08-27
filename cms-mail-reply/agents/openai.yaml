@@ -1,0 +1,5 @@
+interface:
+  display_name: "CMS 메일 답장"
+  short_description: "메일 요청을 분석하고 승인된 답장을 초안으로만 저장합니다"
+  default_prompt: "Use $cms-mail-reply to analyze my recent Gmail, extract reply requests, apply 답장규칙.md, and save approved replies as drafts only."
+
